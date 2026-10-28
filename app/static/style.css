@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Canvas LMS Dark Charcoal Theme */
+:root {
+  --canvas-rail: #141824;
+  --canvas-sidebar: #1e2533;
+  --canvas-base: #1a202c;
+  --canvas-card: #202837;
+  --canvas-header: #283344;
+  --canvas-hover: #2a3547;
+  --border-subtle: #323e52;
+  --border-strong: #475569;
+  --accent-blue: #2563eb;
+  --accent-blue-hover: #1d4ed8;
+  --text-white: #ffffff;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --font-sans: 'Source Sans 3', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Evita scroll en la ventana raíz */
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--canvas-base);
+  color: var(--text-primary);
+  font-size: 0.9375rem; /* 15px: legibilidad ampliada */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Escala Tipográfica Canvas LMS */
+h1 {
+  font-size: 1.625rem; /* 26px */
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--text-white);
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+h3 {
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Scrollbars suaves tipo Canvas Dark */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Selección de texto */
+::selection {
+  background-color: var(--accent-blue);
+  color: #ffffff;
+}
+
+/* Números tabulares para métricas */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Aislamiento de scroll independiente */
+.overscroll-contain {
+  overscroll-behavior: contain;
+}
+
+/* Tarjetas de Asignatura en la barra lateral */
+.course-card {
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.12s ease-out;
+  user-select: none;
+  background-color: var(--canvas-card);
+}
+.course-card:hover {
+  background-color: var(--canvas-hover);
+  border-color: var(--border-subtle);
+}
+.course-card.active {
+  background-color: #23334d;
+  border-color: #3b82f6;
+  border-left: 3.5px solid #3b82f6;
+}
+.course-card.active h3 {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Módulos estilo Canvas LMS */
+.module-box {
+  background-color: var(--canvas-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.module-header {
+  padding: 0.75rem 1rem;
+  background-color: var(--canvas-header);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s ease;
+}
+.module-header:hover {
+  background-color: var(--canvas-hover);
+}
+.module-header h4 {
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.module-content {
+  divide-y: 1px solid var(--border-subtle);
+}
+.module-content.collapsed {
+  display: none;
+}
+
+/* Filas de Archivo dentro del Módulo */
+.file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.15rem;
+  background-color: var(--canvas-card);
+  transition: background-color 0.1s ease;
+  font-size: 0.9375rem; /* 15px */
+  border-bottom: 1px solid rgba(50, 62, 82, 0.4);
+}
+.file-row:last-child {
+  border-bottom: none;
+}
+.file-row:hover {
+  background-color: var(--canvas-hover);
+}
+.file-row.selected {
+  background-color: rgba(37, 99, 235, 0.15);
+}
+
+/* Checkboxes estilo Canvas */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1.5px solid #64748b;
+  border-radius: 0.25rem;
+  background-color: var(--canvas-sidebar);
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  vertical-align: middle;
+}
+input[type="checkbox"]:hover {
+  border-color: #94a3b8;
+}
+input[type="checkbox"]:checked {
+  background-color: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
+input[type="checkbox"]:checked::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: white;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+input[type="checkbox"]:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 1px;
+}
+
+/* Badges de Tipo de Archivo */
+.ext-pdf {
+  color: #f87171;
+  background-color: rgba(239, 68, 68, 0.15);
+}
+.ext-doc, .ext-docx {
+  color: #60a5fa;
+  background-color: rgba(59, 130, 246, 0.15);
+}
+.ext-ppt, .ext-pptx {
+  color: #fb923c;
+  background-color: rgba(249, 115, 22, 0.15);
+}
+.ext-xls, .ext-xlsx {
+  color: #34d399;
+  background-color: rgba(16, 185, 129, 0.15);
+}
+.ext-zip, .ext-rar {
+  color: #c084fc;
+  background-color: rgba(168, 85, 247, 0.15);
+}
+.ext-video {
+  color: #38bdf8;
+  background-color: rgba(14, 165, 233, 0.15);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Carpeta Especial de Archivos Recuperados / Ocultos */
+.module-box.special-box {
+  border-color: rgba(59, 130, 246, 0.4);
+  background-color: #1c2433;
+}
+.module-box.special-box .module-header {
+  background-color: #23334d;
+}
+
+/* Estilos de Tareas / Assignments */
+.assignment-section-title {
+  padding: 0.4rem 1.15rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  background-color: rgba(26, 32, 44, 0.7);
+  border-bottom: 1px solid rgba(50, 62, 82, 0.5);
+}
+.badge-status {
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.badge-status-submitted {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge-status-pending {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+.badge-status-undated {
+  background-color: rgba(100, 116, 139, 0.15);
+  color: #cbd5e1;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+.badge-hidden-file {
+  font-size: 0.6875rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}

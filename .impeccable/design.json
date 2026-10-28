@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-11T22:38:00Z",
+  "title": "Design System: CanvasDL",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Azul Canvas",
+        "canonical": "#2563eb",
+        "tonalRamp": ["#1e3a8a", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd"]
+      },
+      "canvas-base": {
+        "role": "neutral",
+        "displayName": "Fondo Carbón Canvas",
+        "canonical": "#1a202c",
+        "tonalRamp": ["#141824", "#1e2533", "#1a202c", "#202837", "#23334d", "#283344", "#323e52", "#64748b", "#94a3b8", "#cbd5e1"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display Title",
+        "purpose": "Título de asignatura principal en 26px."
+      },
+      "body": {
+        "displayName": "Body Source Sans 3",
+        "purpose": "Texto de lectura y nombres de archivo en 15px."
+      },
+      "label": {
+        "displayName": "Metrics Mono",
+        "purpose": "Tamaños de archivo y badges en 12px."
+      },
+      "caption": {
+        "displayName": "Caption Source Sans 3",
+        "purpose": "Subtítulos y metadatos en 11px."
+      },
+      "micro": {
+        "displayName": "Micro Source Sans 3",
+        "purpose": "Etiquetas de navegación reducidas en 10px."
+      }
+    },
+    "shadows": [
+      {
+        "name": "flat-layer",
+        "value": "none",
+        "purpose": "Diseño tonal plano basado en Canvas LMS."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-quick",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Transición suave en hovers y acordeones."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Canvas Download Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Botón primario de descarga en lote.",
+      "html": "<button class=\"ds-btn-primary\">Descargar Selección</button>",
+      "css": ".ds-btn-primary { background: #2563eb; color: #ffffff; padding: 10px 20px; font-size: 14px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; transition: background-color 0.12s ease; } .ds-btn-primary:hover { background: #1d4ed8; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Canvas LMS Dark Experience",
+    "overview": "CanvasDL adopta fielmente la estructura visual, jerarquía y familiaridad de Canvas LMS adaptada a un tema oscuro suave de máxima legibilidad.",
+    "keyCharacteristics": [
+      "Identidad Canvas Auténtica: Riel global, panel de cursos y acordeones de módulo.",
+      "Tema Oscuro Suave (Charcoal Dark): Fondos en pizarra suave con bordes delimitados de 1px.",
+      "Tipografía Ampliada de Alta Legibilidad: Source Sans 3 con escalas de 15px–26px."
+    ],
+    "rules": [
+      {
+        "name": "The Soft Dark Rule",
+        "body": "La interfaz nunca utiliza negros puros #000000; todos los fondos se basan en tonos carbón y pizarra.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do mantener el riel global Canvas, el panel de cursos y el visor de módulos en sus respectivas áreas con scroll independiente.",
+      "Do utilizar tamaños de fuente cómodos (15px–26px) para evitar forzar la vista.",
+      "Do replicar la apariencia limpia de los módulos de Canvas."
+    ],
+    "donts": [
+      "Don't emplear fondos negros puros.",
+      "Don't reducir el tamaño de los nombres de archivo por debajo de 14px.",
+      "Don't fusionar el scroll del panel lateral con el del área principal."
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: canvasdl-mcp
+    runtime: python
+    buildCommand: pip install -r requirements.txt && pip install -e .
+    startCommand: python -m app.mcp_server --transport sse --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: CANVAS_BASE_URL
+        value: https://canvas.instructure.com
+      - key: CANVAS_API_TOKEN
+        sync: false
+      - key: MCP_AUTH_TOKEN
+        generateValue: true

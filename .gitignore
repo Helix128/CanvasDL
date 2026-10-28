@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Sesión y credenciales (sensible)
+session.json
+*.session
+canvas_token.txt
+.env
+
+# Descargas
+downloads/
+
+# Ajustes locales y respaldos
+settings.json
+*.bak
+
+# Empaquetado y distribución (ISO 27001 8.30)
+dist/
+build/
+*.egg-info/
+*.whl
+*.tar.gz

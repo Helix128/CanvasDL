@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es" class="dark h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CanvasDL — Canvas LMS Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            canvas: {
+              rail: '#141824',
+              sidebar: '#1e2533',
+              base: '#1a202c',
+              card: '#202837',
+              header: '#283344',
+              hover: '#2a3547',
+              border: '#323e52',
+              blue: '#2563eb',
+              blueHover: '#1d4ed8',
+            }
+          },
+          fontFamily: {
+            sans: ['"Source Sans 3"', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="h-full overflow-hidden bg-canvas-base text-slate-100 flex font-sans antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Canvas Global Navigation Rail (Slim Left Bar, Canvas-Style) -->
+  <nav class="w-16 shrink-0 h-full bg-canvas-rail border-r border-canvas-border flex flex-col items-center justify-between py-3.5 select-none z-30" aria-label="Navegación global Canvas">
+    <div class="flex flex-col items-center gap-5 w-full">
+      <!-- Canvas Logo -->
+      <a href="/" class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow hover:bg-blue-500 transition-colors" title="CanvasDL — Inicio">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </a>
+
+      <!-- Profile Avatar Button -->
+      <div class="flex flex-col items-center text-center group cursor-pointer" title="Usuario conectado">
+        <div class="w-9 h-9 rounded-full bg-slate-700 border-2 border-slate-600 flex items-center justify-center text-white font-bold text-xs group-hover:border-blue-400 transition-colors">
+          <span id="userInitialDisplay">U</span>
+        </div>
+        <span class="text-[10px] text-slate-400 mt-1 font-medium group-hover:text-white">Cuenta</span>
+      </div>
+
+      <!-- Navigation Tab: Cursos (Active) -->
+      <button class="flex flex-col items-center text-center w-full py-2 bg-blue-600/15 border-l-2 border-blue-500 text-blue-400 cursor-pointer" title="Cursos">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span class="text-[10px] font-semibold mt-1">Cursos</span>
+      </button>
+
+      <!-- Navigation Tab: Carpeta Local -->
+      <button id="openFolderRailBtn" class="flex flex-col items-center text-center w-full py-2 text-slate-400 hover:text-white transition-colors cursor-pointer" title="Abrir carpeta en explorador local">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span class="text-[10px] font-medium mt-1">Archivos</span>
+      </button>
+    </div>
+
+    <!-- Bottom Rail: Configuración -->
+    <div class="flex flex-col items-center gap-3 w-full">
+      <button id="settingsRailBtn" class="flex flex-col items-center text-center w-full py-2 text-slate-400 hover:text-white transition-colors cursor-pointer" title="Configuración de CanvasDL">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span class="text-[10px] font-medium mt-1">Ajustes</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Middle Pane: Courses Navigation (Independent Scrollable Container) -->
+  <aside class="w-80 md:w-96 flex flex-col shrink-0 h-full min-h-0 bg-canvas-sidebar border-r border-canvas-border select-none">
+    
+    <!-- Sidebar Header: Title, Search & Tabs -->
+    <div class="p-4 border-b border-canvas-border space-y-3 shrink-0 bg-canvas-sidebar">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white tracking-tight">Cursos Canvas</h2>
+        <span id="userNameDisplay" class="text-xs text-blue-400 font-medium truncate max-w-[150px]">Conectando...</span>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative">
+        <input
+          id="courseSearchInput"
+          type="text"
+          placeholder="Buscar curso o código..."
+          class="w-full bg-canvas-card border border-canvas-border rounded-lg py-2 pl-9 pr-3 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+          aria-label="Buscar asignaturas"
+        >
+        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+
+      <!-- Canvas Tabs: Activos vs Todos -->
+      <div class="flex items-center gap-1.5 p-1 bg-canvas-card border border-canvas-border rounded-lg text-sm font-medium">
+        <button id="tabActiveCourses" class="flex-1 py-1.5 px-3 rounded-md text-center transition-all font-semibold text-white bg-blue-600 shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+          <span class="text-amber-300">⭐</span>
+          <span>Activos</span>
+          <span id="activeCountBadge" class="font-mono text-xs px-1.5 py-0.2 rounded-full bg-blue-700/60 text-white">--</span>
+        </button>
+        <button id="tabAllCourses" class="flex-1 py-1.5 px-3 rounded-md text-center transition-all text-slate-300 hover:text-white flex items-center justify-center gap-2 cursor-pointer">
+          <span>Todos</span>
+          <span id="allCountBadge" class="font-mono text-xs px-1.5 py-0.2 rounded-full bg-canvas-sidebar text-slate-400">--</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Courses List Container (EXCLUSIVELY SCROLLABLE PANE) -->
+    <div id="coursesListContainer" class="flex-1 min-h-0 overflow-y-auto overscroll-contain p-2.5 space-y-1.5">
+      <!-- Loading Skeletons -->
+      <div class="p-4 bg-canvas-card border border-canvas-border rounded-lg animate-pulse space-y-2">
+        <div class="h-4 bg-slate-700 rounded w-3/4"></div>
+        <div class="h-3 bg-slate-700/60 rounded w-1/2"></div>
+      </div>
+      <div class="p-4 bg-canvas-card border border-canvas-border rounded-lg animate-pulse space-y-2">
+        <div class="h-4 bg-slate-700 rounded w-4/5"></div>
+        <div class="h-3 bg-slate-700/60 rounded w-2/5"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right Pane: Main Canvas Course View (Independent Scrollable Container) -->
+  <main class="flex-1 flex flex-col shrink min-w-0 h-full min-h-0 bg-canvas-base overflow-hidden relative">
+
+    <!-- Course Top Header (Canvas Breadcrumbs, Title & Primary Actions) -->
+    <div id="courseHeaderSection" class="p-5 border-b border-canvas-border bg-canvas-sidebar/70 flex items-start justify-between gap-4 shrink-0">
+      <div class="space-y-1.5 min-w-0">
+        <!-- Canvas Breadcrumbs -->
+        <div class="flex items-center gap-2 text-xs font-medium text-slate-400 flex-wrap">
+          <span class="text-blue-400 hover:underline cursor-pointer">Cursos</span>
+          <span>&gt;</span>
+          <span id="courseTermBadge" class="px-2 py-0.5 rounded bg-canvas-header border border-canvas-border text-slate-300 font-mono text-xs">Período</span>
+          <span id="courseCodeDisplay" class="font-mono text-slate-400">CÓDIGO</span>
+        </div>
+        <h1 id="courseTitleDisplay" class="text-2xl md:text-3xl font-bold text-white tracking-tight truncate">Selecciona un curso</h1>
+        <p id="courseTeachersDisplay" class="text-sm text-slate-300 truncate">Docentes y materiales de la asignatura</p>
+      </div>
+
+      <div class="flex items-center gap-2.5 shrink-0">
+        <a id="openInCanvasLink" href="#" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-canvas-card hover:bg-canvas-hover text-slate-200 hover:text-white border border-canvas-border text-sm font-semibold transition-colors">
+          <span>Abrir en Canvas LMS</span>
+          <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>
+        <button id="downloadFullCourseBtn" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow transition-colors cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Descargar Todo el Curso</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Canvas Navigation Tabs Bar (Módulos vs Archivos + Filtros) -->
+    <div id="courseToolbar" class="px-5 py-2.5 border-b border-canvas-border bg-canvas-sidebar/40 flex flex-wrap items-center justify-between gap-3 text-sm shrink-0">
+      
+      <!-- View Toggle Tabs (Canvas LMS Style) -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-1">
+          <button id="viewModeModulesBtn" class="py-1.5 px-3.5 rounded-md bg-canvas-header text-white font-bold flex items-center gap-2 cursor-pointer border border-canvas-border">
+            <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            <span>Módulos</span>
+          </button>
+          <button id="viewModeAssignmentsBtn" class="py-1.5 px-3.5 rounded-md text-slate-300 hover:text-white font-semibold flex items-center gap-2 cursor-pointer transition-colors">
+            <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              <path d="m9 14 2 2 4-4"/>
+            </svg>
+            <span>Tareas</span>
+          </button>
+          <button id="viewModeFilesBtn" class="py-1.5 px-3.5 rounded-md text-slate-300 hover:text-white font-semibold flex items-center gap-2 cursor-pointer transition-colors">
+            <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span>Archivos</span>
+          </button>
+        </div>
+
+        <span id="courseItemsStats" class="text-slate-400 font-mono text-xs hidden sm:inline">-- archivos disponibles</span>
+      </div>
+
+      <!-- Quick Extension Filters & Select All -->
+      <div class="flex items-center gap-2">
+        <div class="hidden lg:flex items-center gap-1.5 text-xs font-mono">
+          <button data-ext="all" class="filter-ext-btn px-2.5 py-1 rounded bg-blue-600/25 text-blue-300 border border-blue-500/30 font-semibold">Todos</button>
+          <button data-ext="pdf" class="filter-ext-btn px-2.5 py-1 rounded bg-canvas-card text-slate-300 hover:text-white border border-canvas-border">PDF</button>
+          <button data-ext="pptx" class="filter-ext-btn px-2.5 py-1 rounded bg-canvas-card text-slate-300 hover:text-white border border-canvas-border">PPTX</button>
+          <button data-ext="docx" class="filter-ext-btn px-2.5 py-1 rounded bg-canvas-card text-slate-300 hover:text-white border border-canvas-border">DOCX</button>
+        </div>
+
+        <div class="flex items-center gap-1.5 border-l border-canvas-border pl-2.5">
+          <button id="selectAllBtn" class="px-2.5 py-1 rounded-md bg-canvas-card hover:bg-canvas-hover text-slate-200 hover:text-white border border-canvas-border text-xs font-semibold transition-colors cursor-pointer">Seleccionar todo</button>
+          <button id="deselectAllBtn" class="px-2.5 py-1 rounded-md bg-canvas-card hover:bg-canvas-hover text-slate-400 hover:text-slate-200 border border-canvas-border text-xs font-medium transition-colors cursor-pointer">Desmarcar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Content Explorer (EXCLUSIVELY SCROLLABLE MAIN PANE) -->
+    <div id="courseExplorerContainer" class="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-4 pb-12">
+      <!-- Empty State Prompt -->
+      <div id="emptySelectPrompt" class="h-64 flex flex-col items-center justify-center text-center p-6 space-y-3">
+        <div class="w-14 h-14 rounded-full bg-canvas-card border border-canvas-border flex items-center justify-center text-slate-400">
+          <svg class="w-7 h-7 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <p class="text-base font-bold text-white">Selecciona una asignatura de la columna izquierda</p>
+        <p class="text-sm text-slate-300 max-w-md leading-relaxed">Podrás explorar sus módulos semanales, presentaciones, lecturas y descargar en lote todos los archivos a tu equipo.</p>
+      </div>
+    </div>
+
+    <!-- Grounded Batch Download Dock (Canvas-Style Sticky Bar) -->
+    <div id="batchDock" class="shrink-0 border-t border-canvas-border bg-canvas-sidebar/95 backdrop-blur-md px-6 py-3.5 z-20 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+      
+      <!-- Selection Info -->
+      <div class="flex items-center gap-3.5 w-full sm:w-auto">
+        <div class="w-10 h-10 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div id="dockTitle" class="text-sm font-bold text-white flex items-center gap-2">
+            <span id="selectedCountText">0 archivos seleccionados</span>
+            <span id="selectedSizeText" class="font-mono text-slate-300 tabular-nums font-semibold">· 0 MB</span>
+          </div>
+          <div id="dockSubtitle" class="text-xs text-slate-300 truncate">
+            Descarga directa a tu carpeta local organizada por curso y módulo
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Download Bar (Shown during download) -->
+      <div id="dockProgressSection" class="hidden w-full sm:max-w-md flex-1 px-2 space-y-1.5">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span id="downloadProgressPercentage" class="text-blue-400 font-bold text-sm">0%</span>
+          <span id="downloadProgressCount" class="text-slate-200 font-semibold">0 / 0 completados</span>
+        </div>
+        <div class="w-full bg-canvas-card rounded-full h-2.5 overflow-hidden border border-canvas-border">
+          <div id="downloadProgressBar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+        <button id="cancelDownloadBtn" class="hidden px-3.5 py-2 rounded-lg bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-200 text-xs font-semibold transition-colors cursor-pointer">
+          Cancelar
+        </button>
+        <button id="startDownloadBtn" disabled class="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-canvas-card disabled:text-slate-500 disabled:border disabled:border-canvas-border disabled:cursor-not-allowed text-white text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span id="startDownloadBtnLabel">Descargar Selección</span>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="bg-canvas-sidebar border border-canvas-border rounded-xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-canvas-border pb-3">
+        <h2 id="settingsModalTitle" class="text-lg font-bold text-white tracking-tight">Configuración de CanvasDL</h2>
+        <button id="closeSettingsModalBtn" class="text-slate-400 hover:text-white p-1 rounded-md transition-colors" aria-label="Cerrar modal">✕</button>
+      </div>
+
+      <div class="space-y-4 text-sm">
+        <!-- Carpeta de Descarga -->
+        <div class="space-y-1.5">
+          <label for="settingsDownloadDirInput" class="block font-semibold text-slate-200">Carpeta local de destino:</label>
+          <div class="flex gap-2">
+            <input id="settingsDownloadDirInput" type="text" class="flex-1 bg-canvas-card border border-canvas-border rounded-lg px-3 py-2 text-slate-100 font-mono text-xs focus:outline-none focus:border-blue-500">
+            <button id="settingsSaveDirBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-colors cursor-pointer">Guardar</button>
+          </div>
+          <p class="text-xs text-slate-400">Ruta organizada automáticamente: <code>[Carpeta]/[Curso]/[Módulo]/[Archivo]</code>.</p>
+        </div>
+
+        <!-- Opciones adicionales -->
+        <div class="pt-2 border-t border-canvas-border space-y-2">
+          <label class="flex items-center gap-2.5 cursor-pointer text-slate-300">
+            <input id="settingsAutoOpenCheckbox" type="checkbox" class="rounded border-canvas-border bg-canvas-card text-blue-600 w-4 h-4">
+            <span>Abrir la carpeta en el explorador al finalizar las descargas</span>
+          </label>
+        </div>
+
+        <!-- Token Canvas -->
+        <div class="pt-2 border-t border-canvas-border space-y-1.5">
+          <label for="settingsTokenInput" class="block font-semibold text-slate-200">Token de API Canvas:</label>
+          <div class="flex gap-2">
+            <input id="settingsTokenInput" type="password" placeholder="Pegar token manual si lo deseas renovar..." class="flex-1 bg-canvas-card border border-canvas-border rounded-lg px-3 py-2 text-slate-100 font-mono text-xs focus:outline-none focus:border-blue-500">
+            <button id="settingsSaveTokenBtn" class="px-4 py-2 bg-canvas-header hover:bg-canvas-hover border border-canvas-border text-slate-200 rounded-lg font-semibold transition-colors cursor-pointer">Actualizar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-canvas-border flex justify-end">
+        <button id="closeSettingsModalBtn2" class="px-5 py-2 bg-canvas-card hover:bg-canvas-hover rounded-lg text-slate-200 text-sm font-semibold transition-colors cursor-pointer border border-canvas-border">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
